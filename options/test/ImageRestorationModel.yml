@@ -1,0 +1,122 @@
+# =====================================================================================
+#                      终极版 YAML 测试配置文件模板 (test_options.yml)
+# =====================================================================================
+# 说明:
+#   - 本文件专用于 `test.py` 脚本，用于模型推理和评估。
+#   - 它移除了所有训练相关的配置项（如 optim_g, scheduler, train loss 等）。
+#   - 核心在于正确配置 `path.pretrain_network_g` 和 `datasets`。
+# =====================================================================================
+
+# ----------------- 1. 顶级基本配置 -----------------
+# 测试的唯一名称，所有输出（日志、保存的图像）都会保存在 'results/<name>' 目录下
+name: MyTest_FrENet_Results
+# 模型的类型，必须与你训练时使用的模型类型保持一致
+model_type: ImageRestorationModel
+# 图像放大倍率，必须与模型结构匹配
+scale: 1
+# 使用的 GPU 数量。如果设为 0 或 ~, 则使用 CPU 模式
+num_gpu: 1 # 测试时通常用单卡
+# 随机种子，虽然测试中影响较小，但保持一致是个好习惯
+manual_seed: 42
+
+# ----------------- 2. 数据集配置 (datasets) -----------------
+# 在测试时，可以同时评估多个测试集
+datasets:
+  # --- 测试集 1 配置 ---
+  test_1: # 'test_1' 这个名字可以自定义，但最好以 'test' 开头或包含 'test'
+    # 数据集名称，用于日志显示和结果保存路径
+    name: My_First_Test_Set
+    # 数据集类型，对应于 basicsr/data/ 目录下的某个 Dataset 类
+    type: PairedRawImageDataset # 如果有 GT，使用 Paired；如果没有，使用 Single
+    # 测试数据根目录
+    root_dir: /path/to/your/first_test_dataset/
+    # 文件读取后端
+    io_backend:
+      type: disk
+    # 原始图像的最大像素值，用于归一化。必须和训练时保持一致！
+    max_pixel_value: 16_383 # YAML 支持用 '_' 分隔数字以提高可读性
+  
+  # --- (可选) 测试集 2 配置 ---
+  test_2:
+    name: Another_Test_Set
+    type: PairedRawImageDataset
+    root_dir: /path/to/your/another_test_dataset/
+    io_backend:
+      type: disk
+    max_pixel_value: 16_383
+
+# ----------------- 3. 网络结构配置 (network_g) -----------------
+# 这里的网络结构定义必须与你加载的预训练模型 `pretrain_network_g` 的结构完全匹配
+network_g:
+  # 网络的类型
+  type: FrENet
+  # --- 以下所有参数必须与训练时使用的模型参数完全一致！ ---
+  in_channel: 4
+  width: 32
+  middle_blk_num: 8
+  enc_blk_nums: [2, 2, 4]
+  dec_blk_nums: [4, 2, 2]
+  # 其他模型参数...
+
+# ----------------- 4. 路径配置 (path) -----------------
+path:
+  # 【核心】预训练模型权重的路径。这是测试时必须指定的！
+  pretrain_network_g: /path/to/your/trained_model.pth
+  # 是否严格加载预训练权重（要求网络结构和权重名完全匹配）
+  strict_load_g: true
+  # 加载预训练模型时，权重的字典 key。默认为 'params'
+  param_key: params
+  
+  # --- 以下路径由脚本自动生成，但你也可以手动指定以覆盖默认行为 ---
+  # 'results/<name>/visualization' 默认保存图像的地方
+  # visualization: /custom/path/to/save/images
+  # 'results/<name>/log' 默认保存日志的地方
+  # log: /custom/path/to/save/logs
+
+# ----------------- 5. 验证/测试行为设置 (val) -----------------
+# 'val' 这个 key 在测试脚本中被重用，以控制测试时的行为
+val:
+  # 是否在测试时保存生成的图像
+  save_img: true
+
+  # (可选) 是否启用分块推理 (Tiling)。适用于高分辨率图像，防止 OOM
+  grids: false
+  # 【关联: grids=true】每个分块的高度。与 crop_size_h_ratio 二选一
+  # crop_size_h: 256
+  # 【关联: grids=true】每个分块的宽度。与 crop_size_w_ratio 二选一
+  # crop_size_w: 256
+  
+  # (可选) 是否在计算指标前对齐图像
+  use_align: true
+
+  # (可选) 是否在推理时对图像进行填充
+  padding: false
+  # 【关联: padding=true】填充的目标尺寸倍数
+  padding_size: 8
+  # 【关联: padding=true】PyTorch `F.pad` 函数的填充模式
+  padding_mode: reflect
+
+  # --- 评估指标配置 (metrics) ---
+  # 如果你的测试集有 Ground-Truth，可以配置此项来计算指标
+  metrics:
+    # 指标名称 (可以自定义)
+    psnr:
+      # 计算指标的函数类型
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+  
+  # (旧版参数，为了兼容性) 在保存图像时，是否将 RGB 转换为 BGR。OpenCV 默认使用 BGR
+  rgb2bgr: true
+  # (旧版参数，为了兼容性) 在计算指标时，是使用 [0, 255] 的 uint8 图像，还是 [0, 1] 的 float 张量
+  use_image: true
+
+# ----------------- 6. 分布式测试设置 (dist_params) -----------------
+# 测试时也可以使用分布式，以加快在大型测试集上的推理速度
+dist_params:
+  backend: nccl
+  port: 29501 # 建议使用与训练不同的端口，以防冲突

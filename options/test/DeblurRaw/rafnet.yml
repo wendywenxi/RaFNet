@@ -1,0 +1,59 @@
+name: rafnet-deblur-test
+model_type: ImageRestorationModel
+scale: 1
+num_gpu: 4 # 4  # set num_gpu: 0 for cpu mode
+manual_seed: 42
+
+# dataset and data loader settings
+datasets:
+  test:
+    name: Deblur_RAW_val
+    type: PairedRawImageDataset
+    root_dir: /datasets/DEBLUR_RAW/test/
+    # gt_size: 64
+    io_backend:
+      type: disk
+    max_pixel_value: 16383
+
+# network structures
+network_g:
+  type: RAFNet
+  in_channel: 4
+  out_channel: 4
+  img_size: 128
+  width: 32
+  middle_blk_num: 8
+  enc_blk_nums: [ 2, 2, 4 ]
+  dec_blk_nums: [ 4, 2, 2 ]
+  # train_size: 256 # 滑动窗口大小
+  # grid_overlap_size: 128 # 重叠大小
+  fft_kernel_mode: fixed
+  fixed_fft_kernel: 4
+  dynamic_fft_kernel_divisor: 8
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+
+# validation settings
+val:
+  val_freq: !!float 2e4
+  save_img: true
+  rgb2bgr: false
+  use_image: false
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

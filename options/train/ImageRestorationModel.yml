@@ -1,0 +1,238 @@
+# =====================================================================================
+#                      终极版 YAML 配置文件模板 (options.yml)
+# =====================================================================================
+# 说明:
+#   - 本文件包含了 `train.py` 和 `ImageRestorationModel` 中所有可配置的参数。
+#   - 请根据注释和你的具体需求修改参数值。
+#   - `~` 或 `null` 表示空值或使用默认值。
+# =====================================================================================
+
+# ----------------- 1. 顶级基本配置 -----------------
+# 实验的唯一名称，所有输出（日志、模型）都会保存在 'experiments/<name>' 目录下
+name: MyExperiment_Full_Options
+# 模型的类型，决定了创建哪个模型类。
+# 示例: 'ImageRestorationModel', 'ImageRestorationModelWithReblur'
+model_type: ImageRestorationModel
+# 图像放大倍率，对于去模糊/去噪等非超分任务，设置为 1
+scale: 1
+# 使用的 GPU 数量。如果设为 0 或 ~, 则使用 CPU 模式
+num_gpu: 4
+# 随机种子，用于实验的可复现性
+manual_seed: 42
+
+# ----------------- 2. 数据集配置 (datasets) -----------------
+datasets:
+  # --- 训练集配置 ---
+  train:
+    # 数据集名称，仅用于日志显示
+    name: MyTrainDataset
+    # 数据集类型，对应于 basicsr/data/ 目录下的某个 Dataset 类
+    type: PairedRawImageDataset
+    # 训练数据根目录
+    root_dir: /path/to/your/train_dataset/
+    # 文件读取后端
+    io_backend:
+      type: disk
+
+    # 是否在每个 epoch 开始时打乱数据顺序
+    use_shuffle: true
+    # 每个 GPU 分配的数据加载进程数 (workers)
+    num_worker_per_gpu: 8
+    # 每个 GPU 的批处理大小 (batch size)
+    batch_size_per_gpu: 16
+    # 训练时随机裁剪出的 Ground-Truth 图像块的大小 (patch size)
+    gt_size: 64
+    # 原始图像的最大像素值，用于归一化到 [0, 1] 范围。例如 2^14 - 1 = 16383
+    max_pixel_value: 16383
+
+    # (可选) 是否启用几何数据增强（随机旋转、翻转）
+    geometric_augs: false
+    # (可选) 数据集放大比例。`1` 表示每个 epoch 遍历一次数据集的原始大小
+    dataset_enlarge_ratio: 1
+    # (可选) 数据预取模式，'cpu' 或 'cuda' 可以加速数据加载，但会增加内存消耗
+    prefetch_mode: ~
+    # (可选) 文件名模板，`{}` 是占位符
+    filename_tmpl: '{}'
+
+    # --- (可选) 渐进式学习配置 ---
+    # 如果定义了 'iters'，训练将进入渐进式学习模式，'total_epoch' 和 'total_iter' 会被忽略
+    # iters: [50000, 40000, 30000, 20000, 10000] # 每个阶段的迭代次数列表
+    # gt_sizes: [ 64, 96, 128, 160, 192 ]      # 每个阶段的图像块大小列表
+    # mini_batch_sizes: [ 16, 16, 8, 8, 4 ]       # 每个阶段的 batch size 列表
+
+  # --- 验证集配置 ---
+  val:
+    name: MyValDataset
+    type: PairedRawImageDataset
+    root_dir: /path/to/your/val_dataset/
+    gt_size: 64 # 验证时可以保持固定大小，或不设置以使用完整图像
+    io_backend:
+      type: disk
+    max_pixel_value: 16383 # 需要和训练集保持一致
+
+# ----------------- 3. 网络结构配置 (network_g) -----------------
+network_g:
+  # 网络的类型，对应于 basicsr/archs/ 目录下的某个网络类
+  type: FrENet
+  # --- 以下所有参数将作为关键字参数 (kwargs) 直接传递给网络模型的构造函数 __init__ ---
+  in_channel: 4
+  width: 32
+  middle_blk_num: 8
+  enc_blk_nums: [2, 2, 4]
+  dec_blk_nums: [4, 2, 2]
+  # 其他模型可能需要的参数...
+  # train_size: 64
+  # img_size: 64
+  # grid_overlap_size: 16
+
+# ----------------- 4. 路径配置 (path) -----------------
+path:
+  # (可选) 预训练模型权重的路径。如果不需要，请设为 ~
+  pretrain_network_g: ~
+  # 是否严格加载预训练权重（要求网络结构和权重名完全匹配）
+  strict_load_g: true
+  # (可选) 加载预训练模型时，权重的字典 key。默认为 'params'
+  param_key: params
+  # (可选) 中断后恢复训练的状态文件路径。通常脚本会自动寻找，无需手动设置
+  resume_state: ~
+
+# ----------------- 5. 训练设置 (train) -----------------
+train:
+  # 学习率调度器的更新单位。'epoch' 或 'iter'
+  update_schedule_by: epoch
+  # 【关联: update_schedule_by='epoch'】总的训练轮数
+  total_epoch: 1000
+  # 【关联: update_schedule_by='iter'】总的训练迭代次数 (定义此项时，total_epoch 会被忽略)
+  # total_iter: 200000
+
+  # (可选) 学习率预热的迭代次数。-1 表示不使用
+  warmup_iter: -1
+  # (可选) 是否启用颜色数据增强
+  color_augs: false
+  # (可选) 是否启用梯度裁剪
+  use_grad_clip: true
+
+  # (可选) 梯度裁剪配置。如果不需要，请将整个 `grad_clip` 部分注释掉或设为 ~
+  grad_clip:
+    # 梯度范数的最大阈值。这是防止梯度爆炸的关键参数。
+    # 推荐的起始值为 1.0。如果训练依然不稳定，可以尝试更小的值如 0.1。
+    max_norm: 1.0
+    # 计算范数的类型。2 表示 L2 范数（标准做法），1 表示 L1 范数等。
+    # 这个参数是可选的，如果省略，代码中会默认使用 2。
+    norm_type: 2
+
+  # --- 优化器配置 (optim_g) ---
+  optim_g:
+    # 优化器类型，例如 Adam, AdamW, SGD
+    type: AdamW
+    # --- 以下参数将直接传递给优化器的构造函数 ---
+    lr: !!float 1e-3
+    weight_decay: !!float 1e-4
+    betas: [0.9, 0.999]
+
+  # --- 学习率调度器配置 (scheduler) ---
+  scheduler:
+    # 调度器类型，例如 TrueCosineAnnealingLR, MultiStepLR, CosineAnnealingRestartLR
+    type: TrueCosineAnnealingLR
+    # --- 以下参数将直接传递给调度器的构造函数 ---
+    # 【关联: type='TrueCosineAnnealingLR'】
+    T_max: 1000       # 总的下降周期，通常等于 total_epoch 或 total_iter
+    eta_min: !!float 1e-6 # 学习率的最小值
+
+  # --- 损失函数配置 ---
+  # 主损失函数 (通常是像素损失)
+  pixel_opt:
+    # 损失函数类型，例如 FreqLoss, L1Loss, MSELoss, CharbonnierLoss
+    type: FreqLoss
+    # --- 以下参数将直接传递给损失函数的构造函数 ---
+    loss_weight: 1.0  # 此损失在总损失中的权重
+    reduction: mean   # 'mean' 或 'sum'
+    # (可选, 比如 CharbonnierLoss 需要)
+    # eps: !!float 1e-12
+
+  # (可选) 感知损失
+  # perceptual_opt:
+  #   type: PerceptualLoss
+  #   loss_weight: 1.0
+  #   # --- 以下参数将直接传递给 PerceptualLoss 的构造函数 ---
+  #   layer_weights:
+  #     'conv1_2': 0.1
+  #     'conv2_2': 0.1
+  #     'conv3_4': 1
+  #     'conv4_4': 1
+  #     'conv5_4': 1
+  #   vgg_type: vgg19
+  #   use_input_norm: true
+  #   range_norm: false
+  #   perceptual_weight: 1.0
+  #   style_weight: 0
+
+  # --- (可选, 针对 ImageRestorationModelWithReblur 模型) ---
+  # l_recon_w: 1.0     # 主重建损失的权重
+  # l_reblur_w: 0.5    # Re-blur 损失的权重
+  # reblur_opt:
+  #   type: L1Loss
+  #   loss_weight: 1.0 # 这个值会被 l_reblur_w 覆盖
+  #   reduction: mean
+
+# ----------------- 6. 验证设置 (val) -----------------
+val:
+  # 验证频率。在 Epoch 模式下，表示每 N 个 epoch 验证一次; 在 Iter 模式下，表示每 N 个 iter 验证一次
+  val_freq: 50
+  # 是否在验证时保存生成的图像
+  save_img: false
+
+  # (可选) 是否启用分块推理 (Tiling)。适用于高分辨率图像，防止 OOM
+  grids: false
+  # 【关联: grids=true】每个分块的高度。与 crop_size_h_ratio 二选一
+  # crop_size_h: 256
+  # 【关联: grids=true】每个分块的宽度。与 crop_size_w_ratio 二选一
+  # crop_size_w: 256
+  # 【关联: grids=true】(另一种方式) 分块高度占原图高度的比例
+  # crop_size_h_ratio: 0.5
+  # 【关联: grids=true】(另一种方式) 分块宽度占原图宽度的比例
+  # crop_size_w_ratio: 0.5
+
+  # (可选) 是否在计算指标前对齐图像，适用于有轻微位移的真实世界数据
+  use_align: true
+
+  # (可选) 是否在推理时对图像进行填充，以满足网络的尺寸要求（如尺寸必须是8的倍数）
+  padding: false
+  # 【关联: padding=true】填充的目标尺寸倍数
+  padding_size: 8
+  # 【关联: padding=true】PyTorch `F.pad` 函数的填充模式
+  padding_mode: reflect
+
+  # --- 评估指标配置 (metrics) ---
+  metrics:
+    # 指标名称 (可以自定义)
+    psnr:
+      # 计算指标的函数类型，对应于 basicsr/metrics/ 目录下的函数
+      type: calculate_psnr
+      # --- 以下参数将直接传递给计算函数 ---
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+
+# ----------------- 7. 日志设置 (logger) -----------------
+logger:
+  # 在控制台打印日志的频率。在 Epoch/Iter 模式下，分别表示每 N 个 epoch/iter 打印一次
+  print_freq: 1
+  # 保存模型检查点 (.pth 和 .state 文件) 的频率
+  save_checkpoint_freq: 50
+  # 是否使用 TensorBoard 进行可视化日志记录
+  use_tb_logger: false
+  # (可选) Weights & Biases 配置。如果项目名不为 ~，则启用
+  wandb:
+    project: ~
+    # resume_id: ~ # 用于恢复 W&B 运行
+
+# ----------------- 8. 分布式训练设置 (dist_params) -----------------
+dist_params:
+  # 分布式通信后端
+  backend: nccl
+  # 通信端口
+  port: 29500

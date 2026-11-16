@@ -1,0 +1,72 @@
+# ------------------------------------------------------------------------
+# Copyright (c) 2022 megvii-model. All Rights Reserved.
+# ------------------------------------------------------------------------
+# Modified from BasicSR (https://github.com/xinntao/BasicSR)
+# Copyright 2018-2020 BasicSR Authors
+# ------------------------------------------------------------------------
+# general settings
+name: rafnet-demosaic-test
+model_type: ImageRestorationModel
+scale: 1
+num_gpu: 4 # set num_gpu: 0 for cpu mode
+manual_seed: 42
+
+# dataset and data loader settings
+datasets:
+
+  test:
+    name: demosaic-test
+    type: PairedDemosaicDataset
+    dataroot_gt: /mnt/hdd/Datasets/Demosaic/data/val/gt
+    dataroot_lq: /mnt/hdd/Datasets/Demosaic/data/val/lq
+
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: RaFNet_DCRH # RaFNet
+  in_channel: 1
+  out_channel: 3
+  width: 32
+  img_size: 128 
+  middle_blk_num: 8
+  enc_blk_nums: [ 2, 2, 4 ]
+  dec_blk_nums: [ 4, 2, 2 ]
+  # grid_overlap_size: 128
+  fft_kernel_mode: fixed
+  fixed_fft_kernel: 4
+  # dynamic_fft_kernel_divisor: 8
+  # afpm_overlap_ratio: 0
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+
+# validation settings
+val:
+  save_img: true
+  # grids: false
+  grids: true
+  crop_size_h: 128
+  crop_size_w: 128
+  overlap_h: 64
+  overlap_w: 64
+  max_minibatch: 16
+
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
