@@ -69,8 +69,6 @@ SIDD_Medium_Raw/
     └── gt/<name>.raw
 ```
 
-The separate `sidd-raw-val-kaggle.py` script extracts benchmark noisy blocks. It does not provide a complete benchmark inference/export/submission pipeline; the supplied paired test loader requires ground truth. Local validation and official SIDD benchmark scores use different protocols.
-
 ### RAW Demosaicing: NTIRE 2025 RAIM
 
 Use the Phase 1 paired data described in the [NTIRE 2025 RAIM dataset/challenge](https://drive.google.com/drive/folders/1Mgqve-yNcE26IIieI8lMIf-25VvZRs_J). The manuscript uses **38 training pairs and 12 test pairs** from 50 images, with 512 × 512 training patches extracted at stride 256.
