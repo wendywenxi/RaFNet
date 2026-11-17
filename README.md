@@ -85,10 +85,6 @@ Demosaic/data/
 
 ## Training
 
-Update dataset paths and set `num_gpu` to your GPU count. For a single GPU, use `num_gpu: 1`.
-
-In the deblurring training YAML, remove `network_g.train_size` or set it to `false` before batch training. The current value of 128 activates the network's tiling path, which asserts a batch size of one even during training. Enable this setting only for single-image tiled evaluation.
-
 ### Single-GPU Training
 
 ```bash
@@ -131,10 +127,6 @@ All supplied training YAML files use:
 - **Initial learning rate:** `1e-3`.
 - **Scheduler:** cosine annealing.
 - **Loss:** `L1Loss + 0.1 × FFTLoss`.
-
-The manuscript describes Adam; check this optimizer difference when reproducing its experiments.
-
-Checkpoints, training states, and logs are saved under `experiments/<name>/`. To resume training, set `path.resume_state` to the corresponding saved training state.
 
 ## Evaluation
 
