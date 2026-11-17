@@ -48,7 +48,7 @@ datasets:
 network_g:
   type: RaFNet_DCRH # model name
   in_channel: 1
-  out_channel: 3 # frenet sharew rotation:3, v1v2:4
+  out_channel: 3 # DCRH:4
   width: 32
   middle_blk_num: 8
   enc_blk_nums: [2, 2, 4]
