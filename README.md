@@ -77,7 +77,7 @@ The separate `sidd-raw-val-kaggle.py` script extracts benchmark noisy blocks. It
 
 ### RAW Demosaicing: NTIRE 2025 RAIM
 
-Use the Phase 1 paired data described in the NTIRE 2025 RAIM dataset/challenge. The manuscript uses **38 training pairs and 12 test pairs** from 50 images, with 512 × 512 training patches extracted at stride 256.
+Use the Phase 1 paired data described in the [NTIRE 2025 RAIM dataset/challenge](https://drive.google.com/drive/folders/1Mgqve-yNcE26IIieI8lMIf-25VvZRs_J). The manuscript uses **38 training pairs and 12 test pairs** from 50 images, with 512 × 512 training patches extracted at stride 256.
 
 Set `dataroot_lq` and `dataroot_gt` in the demosaicing YAML files:
 
