@@ -7,19 +7,6 @@ Tianjin University · † Equal contribution
 
 > **Paper status:** Submitted to the *International Journal of Computer Vision (IJCV)*; currently under review.
 
-## Results
-
-Results reported in the manuscript:
-
-| Task | Dataset / protocol | Model | PSNR ↑ | SSIM ↑ | MACs (G) ↓ | Params (M) ↓ |
-| :--- | :--- | :--- | ---: | ---: | ---: | ---: |
-| RAW deblurring | Deblur-RAW | RaFNet | 45.16 | 0.994 | 2.20 | 19.80 |
-| RAW denoising | SIDD Benchmark, official online evaluation | RaFNet | 52.06 | 0.9930 | 35.03 | 19.80 |
-| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet | 34.74 | 0.9262 | 8.77 | 19.80 |
-| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet+ | 34.80 | 0.9287 | 9.18 | 19.82 |
-
-RaFNet+ incorporates the Demosaicing Color Refinement Head (DCRH). MACs depend on the task and input resolution; values above follow the corresponding manuscript tables.
-
 ## Installation
 
 A Linux environment with an NVIDIA GPU is recommended for training. The dependency file pins PyTorch **2.8.0**, torchvision **0.23.0**, and CUDA 12 packages.
@@ -259,17 +246,20 @@ python -m basicsr.test -opt options/test/Demosaic/rafnet.yml
 
 Test logs and saved visualizations are written under `results/<name>/`. Saved visualizations are not a replacement for the RAW benchmark submission format.
 
-## Citation
+## Results
 
-If you use this work, please cite the manuscript. The entry below records its current review status and does not imply acceptance or publication.
+Results reported in the manuscript:
 
-```bibtex
-@misc{zhao_rafnet,
-  title  = {Efficient RAW Image Restoration via Radially Symmetric Frequency Modulation},
-  author = {Zhao, Wenxi and Jiao, Wenlong and Wang, Ping and Zhu, Pengfei and Ren, Dongwei},
-  note   = {Manuscript submitted to the International Journal of Computer Vision (IJCV), under review}
-}
-```
+| Task | Dataset / protocol | Model | PSNR ↑ | SSIM ↑ | MACs (G) ↓ | Params (M) ↓ |
+| :--- | :--- | :--- | ---: | ---: | ---: | ---: |
+| RAW deblurring | Deblur-RAW | RaFNet | 45.16 | 0.994 | 2.20 | 19.80 |
+| RAW denoising | SIDD Benchmark, official online evaluation | RaFNet | 52.06 | 0.9930 | 35.03 | 19.80 |
+| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet | 34.74 | 0.9262 | 8.77 | 19.80 |
+| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet+ | 34.80 | 0.9287 | 9.18 | 19.82 |
+
+RaFNet+ incorporates the Demosaicing Color Refinement Head (DCRH). MACs depend on the task and input resolution; values above follow the corresponding manuscript tables.
+
+
 
 ## Acknowledgements
 
@@ -280,4 +270,5 @@ The training and evaluation framework builds on [BasicSR](https://github.com/XPi
 For implementation questions, please open a [GitHub issue](https://github.com/wendywenxi/RaFNet/issues).
 
 - Wenxi Zhao: [wendyzhao@tju.edu.cn](mailto:wendyzhao@tju.edu.cn)
+- Wenlong Jiao: [wenlongo@tju.edu.cn](mailto:wenlong@tju.edu.cn)
 - Corresponding author, Dongwei Ren: [rendw@tju.edu.cn](mailto:rendw@tju.edu.cn)
