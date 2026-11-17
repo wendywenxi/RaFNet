@@ -127,13 +127,14 @@ Use the following script to organize the restored RAW predictions into the forma
 python scripts/prepare_kaggle_submission_raw.py
 ```
 
-Upload the generated submission file to the SIDD RAW benchmark on [Kaggle](https://www.kaggle.com/competitions/sidd-benchmark-raw-psnr/submissions) for evaluation.
+Upload the generated submission file to the SIDD RAW benchmarks on Kaggle for [PSNR evaluation](https://www.kaggle.com/competitions/sidd-benchmark-raw-psnr/submissions) and [SSIM evaluation](https://www.kaggle.com/competitions/sidd-benchmark-raw-ssim/submissions).
 
 ### RAW Demosaicing
 
 ```bash
 python -m basicsr.test -opt options/test/Demosaic/rafnet.yml
 ```
+Evaluation logs and saved visualizations are written to `results/<name>/`.
 
 ## Results
 
@@ -143,8 +144,8 @@ Results reported in the manuscript:
 | :--- | :--- | :--- | ---: | ---: | ---: | ---: |
 | RAW deblurring | Deblur-RAW | RaFNet | 45.16 | 0.994 | 2.20 | 19.80 |
 | RAW denoising | SIDD Benchmark, official online evaluation | RaFNet | 52.06 | 0.9930 | 35.03 | 19.80 |
-| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet | 34.74 | 0.9262 | 8.77 | 19.80 |
-| RAW demosaicing | NTIRE 2025 RAIM, manuscript 38/12 split | RaFNet+ | 34.80 | 0.9287 | 9.18 | 19.82 |
+| RAW demosaicing | NTIRE 2025 RAIM | RaFNet | 34.74 | 0.9262 | 8.77 | 19.80 |
+| RAW demosaicing | NTIRE 2025 RAIM | RaFNet+ | 34.80 | 0.9287 | 9.18 | 19.82 |
 
 RaFNet+ incorporates the Demosaicing Color Refinement Head (DCRH). MACs depend on the task and input resolution; values above follow the corresponding manuscript tables.
 
@@ -159,5 +160,5 @@ The training and evaluation framework builds on [BasicSR](https://github.com/XPi
 For implementation questions, please open a [GitHub issue](https://github.com/wendywenxi/RaFNet/issues).
 
 - Wenxi Zhao: [wendyzhao@tju.edu.cn](mailto:wendyzhao@tju.edu.cn)
-- Wenlong Jiao: [wenlongo@tju.edu.cn](mailto:wenlong@tju.edu.cn)
+- Wenlong Jiao: [wenlong@tju.edu.cn](mailto:wenlong@tju.edu.cn)
 - Corresponding author, Dongwei Ren: [rendw@tju.edu.cn](mailto:rendw@tju.edu.cn)
