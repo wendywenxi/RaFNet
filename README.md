@@ -5,39 +5,18 @@ Official PyTorch implementation of **RaFNet**, a convolution–Fourier framework
 **Wenxi Zhao†, Wenlong Jiao†, Ping Wang, Pengfei Zhu, Dongwei Ren**  
 Tianjin University · † Equal contribution
 
-> **Paper status:** Submitted to the *International Journal of Computer Vision (IJCV)*; currently under review.
 
 ## Installation
-
-A Linux environment with an NVIDIA GPU is recommended for training. The dependency file pins PyTorch **2.8.0**, torchvision **0.23.0**, and CUDA 12 packages.
-
-For example, create an isolated Python 3.11 environment:
 
 ```bash
 conda create -n rafnet python=3.11 -y
 conda activate rafnet
-
-git clone https://github.com/wendywenxi/RaFNet.git
-cd RaFNet
-
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
-
-The requirements file contains platform-specific NVIDIA packages. Match the PyTorch/CUDA installation to your system.
-
-Denoising and demosaicing training configurations enable TensorBoard, which is not listed in `requirements.txt`. Install it separately, or set `logger.use_tb_logger: false`:
-
-```bash
-python -m pip install tensorboard
-```
-
-Run all commands below from the repository root using `python -m` so that the bundled `basicsr` package is used.
 
 ## Dataset Preparation
 
 Download datasets from their original providers and follow their usage terms. Dataset files are not included in this repository.
-
-The YAML files and preprocessing scripts contain machine-specific absolute paths. Update these paths before running.
 
 ### RAW Deblurring: Deblur-RAW
 
@@ -56,10 +35,6 @@ DEBLUR_RAW/
         ├── blur_raw/<name>.dng
         └── sharp_raw/<name>.dng
 ```
-
-Set `datasets.*.root_dir` in the deblurring YAML files.
-
-The loader subtracts the mean sensor black level, normalizes using `max_pixel_value - black_level`, and packs the Bayer mosaic into four channels. The supplied configurations use `max_pixel_value: 16383`; check that this matches your sensor data.
 
 ### RAW Denoising: SIDD
 
@@ -112,15 +87,6 @@ Demosaic/data/
     ├── lq/<name>.raw
     └── gt/<name>.raw
 ```
-
-The current `PairedDemosaicDataset` expects headerless `uint16` files:
-
-- **LQ:** square single-channel Bayer mosaics.
-- **GT:** square three-channel arrays stored in HWC order.
-
-Values are normalized internally by 65,535. Keep paired filenames identical.
-
-Dataset conversion and exact train/test split lists are not included, so matching the manuscript split requires the original split information.
 
 ## Training
 
