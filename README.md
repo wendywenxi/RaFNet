@@ -51,13 +51,11 @@ Obtain the RAW data from the [SIDD](https://abdokamel.github.io/sidd/). The manu
 
    This reads MATLAB v7.3 RAW arrays, converts normalized values to `uint16`, and writes 512 × 512 binary patches with stride 384.
 
-2. Edit `scripts/data_preparation/sidd-raw-val.py` to set the validation MAT path and output directory. Run it for the noisy blocks; also adapt/uncomment the ground-truth section to generate the paired clean blocks:
+2. Run `scripts/data_preparation/sidd-raw-val.py` for the validation noisy/gt data:
 
    ```bash
    python -m scripts.data_preparation.sidd-raw-val
    ```
-
-3. Set `dataroot_lq` and `dataroot_gt` in the denoising YAML files to the generated folders.
 
 Expected layout:
 
@@ -70,8 +68,6 @@ SIDD_Medium_Raw/
     ├── noisy/<name>.raw
     └── gt/<name>.raw
 ```
-
-The loader reads headerless `uint16` square single-channel arrays and divides values by 65,535. Paired files must have matching names.
 
 The separate `sidd-raw-val-kaggle.py` script extracts benchmark noisy blocks. It does not provide a complete benchmark inference/export/submission pipeline; the supplied paired test loader requires ground truth. Local validation and official SIDD benchmark scores use different protocols.
 
