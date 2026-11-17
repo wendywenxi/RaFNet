@@ -23,7 +23,7 @@ Download datasets from their original providers and follow their usage terms. Da
 
 ### RAW Deblurring: Deblur-RAW
 
-Obtain the dataset from the [Deblur-RAW project](https://github.com/bob831009/raw_image_deblurring).
+Obtain the dataset from the [Deblur-RAW](https://github.com/bob831009/raw_image_deblurring).
 
 The `PairedRawImageDataset` loader expects paired DNG files with matching filenames under session directories:
 
@@ -41,7 +41,7 @@ DEBLUR_RAW/
 
 ### RAW Denoising: SIDD
 
-Obtain the RAW data from the [SIDD project](https://abdokamel.github.io/sidd/). The manuscript uses SIDD Medium for training and the official benchmark for online evaluation.
+Obtain the RAW data from the [SIDD](https://abdokamel.github.io/sidd/). The manuscript uses SIDD Medium for training and the official benchmark for online evaluation.
 
 1. In `scripts/data_preparation/sidd-raw.py`, set `input_folder` and both `save_folder` paths. Run:
 
