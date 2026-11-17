@@ -100,7 +100,7 @@ torchrun --nproc_per_node=1 basicsr/train.py -opt options/train/Demosaic/rafnet.
 
 The supplied training configurations use the following settings:
 
-| Task | Network class | Input → output channels | Training crop* | Batch per GPU | Iterations |
+| Task | Network class | Input → output channels | Training crop | Batch per GPU | Iterations |
 | :--- | :--- | :--- | ---: | ---: | ---: |
 | Deblurring | `RaFNet` | 4 → 4 | 128 | 32 | 300,000 |
 | Denoising | `RaFNet` | 1 → 1 | 256 | 8 | 400,000 |
