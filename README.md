@@ -1,10 +1,13 @@
 # Efficient RAW Image Restoration via Radially Symmetric Frequency Modulation
 
-Official PyTorch implementation of **RaFNet**, a convolution–Fourier framework for RAW image deblurring, denoising, and demosaicing.
 
-**Wenxi Zhao†, Wenlong Jiao†, Ping Wang, Pengfei Zhu, Dongwei Ren**  
+Wenxi Zhao†, Wenlong Jiao†, Ping Wang, Pengfei Zhu, Dongwei Ren
+
 Tianjin University · † Equal contribution
 
+***
+>**Abstract**: RAW sensor data preserve linear intensity and high dynamic range, offering a valuable basis for image restoration before in-camera image signal processing. However, RAW images are affected by diverse degradations, including blur, sensor noise, and color filter array subsampling, which exhibit distinct spectral characteristics and are commonly addressed with task-specific models. We propose RaFNet, a compact convolution-Fourier framework driven by radially symmetric adaptive frequency modulation for RAW image restoration, and evaluate it on RAW deblurring, denoising, and demosaicing. The framework integrates spatial- and frequency-domain processing through frequency-domain skip connections and Radial Frequency Blocks (RaF-Blocks). Each RaF-Block combines global spectral context modeling with local frequency modulation through the proposed Radially Symmetric Frequency Modulation (RSFM) module. Specifically, RSFM shares modulation parameters across frequency locations with the same spectral radius and rotates modulation kernels according to angular positions, thereby combining radial parameter sharing with directional sensitivity. We further analyze the proposed frequency modulation from a Wiener-filter perspective, providing theoretical insights into its underlying mechanism. Experiments on three RAW restoration benchmarks demonstrate that RaFNet achieves competitive restoration performance while maintaining a favorable trade-off between computational cost and model complexity.
+***
 
 ## Installation
 
