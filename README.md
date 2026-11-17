@@ -104,8 +104,8 @@ The supplied training configurations use the following settings:
 | :--- | :--- | :--- | ---: | ---: | ---: |
 | Deblurring | `RaFNet` | 4 → 4 | 128 | 32 | 300,000 |
 | Denoising | `RaFNet` | 1 → 1 | 256 | 8 | 400,000 |
-| Demosaicing | `RaFNet` | 1 → 4 | 128 | 16 | 400,000 |
-| Demosaicing | `RaFNet_DCRH` | 1 → 3 | 128 | 16 | 400,000 |
+| Demosaicing | `RaFNet` | 1 → 3 | 128 | 16 | 400,000 |
+| Demosaicing | `RaFNet_DCRH` | 1 → 4 | 128 | 16 | 400,000 |
 
 ## Evaluation
 
