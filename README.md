@@ -109,7 +109,7 @@ The supplied training configurations use the following settings:
 
 ## Evaluation
 
-Trained models are stored in the `checkpoint/` directory. Before evaluation, update the dataset paths and set `path.pretrain_network_g` in the corresponding test YAML file:
+Trained models are stored in the `checkpoint/` directory. Before evaluation, update the dataset paths and set `path.pretrain_network_g` in the corresponding test YAML file.
 
 ### RAW Deblurring
 
