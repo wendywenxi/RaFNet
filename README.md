@@ -1,6 +1,4 @@
-# RaFNet
-
-## Efficient RAW Image Restoration via Radially Symmetric Frequency Modulation
+# Efficient RAW Image Restoration via Radially Symmetric Frequency Modulation
 
 Official PyTorch implementation of **RaFNet**, a convolution–Fourier framework for RAW image deblurring, denoising, and demosaicing.
 
