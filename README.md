@@ -49,9 +49,7 @@ Obtain the RAW data from the [SIDD](https://abdokamel.github.io/sidd/). The manu
    python -m scripts.data_preparation.sidd-raw
    ```
 
-   This reads MATLAB v7.3 RAW arrays, converts normalized values to `uint16`, and writes 512 × 512 binary patches with stride 384.
-
-2. Run `scripts/data_preparation/sidd-raw-val.py` for the validation noisy/gt data:
+2. In `scripts/data_preparation/sidd-raw-val.py`, set the validation MAT path and output directory. Run it for the noisy/ground-truth blocks:
 
    ```bash
    python -m scripts.data_preparation.sidd-raw-val
