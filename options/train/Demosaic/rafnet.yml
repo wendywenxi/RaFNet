@@ -46,8 +46,8 @@ network_g:
   middle_blk_num: 8
   enc_blk_nums: [2, 2, 4]
   dec_blk_nums: [4, 2, 2]
-  train_size: 128 
-  grid_overlap_size: 64 
+  train_size: 256
+  grid_overlap_size: 128
   fft_kernel_mode: fixed
   fixed_fft_kernel: 4
   dynamic_fft_kernel_divisor: 8
