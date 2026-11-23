@@ -1,10 +1,3 @@
-# ------------------------------------------------------------------------
-# Copyright (c) 2022 megvii-model. All Rights Reserved.
-# ------------------------------------------------------------------------
-# Modified from BasicSR (https://github.com/xinntao/BasicSR)
-# Copyright 2018-2020 BasicSR Authors
-# ------------------------------------------------------------------------
-# general settings
 name: RaFNet-demosaic
 model_type: ImageRestorationModel
 scale: 1
@@ -42,20 +35,22 @@ datasets:
     io_backend:
       type: disk
 
-    gt_size: 128
 
 
 network_g:
-  type: RaFNet_DCRH # model name
+  type: RaFNet_DCRH 
   in_channel: 1
   out_channel: 3 # DCRH:4
+  img_size: 128
   width: 32
   middle_blk_num: 8
   enc_blk_nums: [2, 2, 4]
   dec_blk_nums: [4, 2, 2]
-  img_size: 128
+  train_size: 128 
+  grid_overlap_size: 64 
   fft_kernel_mode: fixed
   fixed_fft_kernel: 4
+  dynamic_fft_kernel_divisor: 8
 
 
 # path
@@ -94,21 +89,10 @@ train:
     loss_weight: 0.1
     reduction: 'mean'
 
-  # pixel_opt:
-  #   type: PSNRLoss
-  #   loss_weight: 1
-  #   reduction: mean
-
 # validation settings
 val:
   val_freq: !!float 5e3
   save_img: false
-  grids: true
-  crop_size_h: 256
-  crop_size_w: 256
-  overlap_h: 128
-  overlap_w: 128
-  max_minibatch: 16
 
   metrics:
     psnr: # metric name, can be arbitrary
