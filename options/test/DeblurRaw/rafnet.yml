@@ -38,7 +38,7 @@ path:
 # validation settings
 val:
   val_freq: !!float 2e4
-  save_img: true
+  save_img: false
   rgb2bgr: false
   use_image: false
 
