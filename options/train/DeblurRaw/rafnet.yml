@@ -28,7 +28,6 @@ datasets:
     name: Deblur_RAW_val
     type: PairedRawImageDataset
     root_dir: /datasets/DEBLUR_RAW/test/
-    gt_size: 128 
     io_backend:
       type: disk
     max_pixel_value: 16383
